@@ -13,7 +13,7 @@ export class Question {
     /**
      * Question image
      */
-    image: string;
+    image?: string;
     /**
      * List of question's selections
      */
@@ -37,7 +37,7 @@ export class Question {
     description: string
 
 
-    constructor(args: { title: string, description: string, qid: number, image: string, selections: SelectionObj[] }) {
+    constructor(args: { title: string, description: string, qid: number, image?: string, selections: SelectionObj[] }) {
         const { title, description, qid, image, selections } = args
         this.title = title
         this.description = description

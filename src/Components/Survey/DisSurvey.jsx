@@ -31,7 +31,7 @@ import {
   CircularProgress
 } from "@material-ui/core";
 import blue from "@material-ui/core/colors/blue";
-import { UserSelections } from "./UserSelections/UserSelections";
+import { UserSelections } from "./UserSelections/player/UserSelections";
 
 const theme = createMuiTheme({
   palette: {
