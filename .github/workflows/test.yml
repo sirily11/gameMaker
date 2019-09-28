@@ -20,8 +20,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: yarn install, and test
+        env:
+        CODACY_ACCOUNT_TOKEN: ${{ secrets.CODACY_ACCOUNT_TOKEN }}
         run: |
           yarn
-          yarn  test
+          yarn  test-with-coverage
         env:
           CI: false
