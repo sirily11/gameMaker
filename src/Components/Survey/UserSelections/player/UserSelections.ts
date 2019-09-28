@@ -1,31 +1,7 @@
 import { Question } from './question';
 import { SelectionObj } from './selection';
+import { SubmitObject, Game } from '../model/model';
 
-export interface SubmitObject {
-    time_takes: number
-    sid: number
-}
-
-export interface Survey {
-    id: number
-    title: string
-    create_at: string
-    questions: SurveyQuestion[]
-}
-
-export interface SurveyQuestion {
-    id: number
-    description: string
-    title: string
-    image?: string
-    selections: SurveySelection[]
-}
-
-export interface SurveySelection {
-    id: number
-    title: string
-    to_question?: number
-}
 
 /**
  * Create selection objects from online data.
@@ -60,7 +36,7 @@ export class UserSelections {
      * Call this first
      * @param data Survey data
      */
-    async build(data: Survey): Promise<UserSelections> {
+    async build(data: Game): Promise<UserSelections> {
         return new Promise((resolve, reject) => {
             this.title = data.title
             // Question list
@@ -254,22 +230,28 @@ export class UserSelections {
      * @param data data from server
      * @param questions an empty question list
      */
-    private createQuestions(data: Survey, questions: Question[]) {
-        data.questions.forEach((q) => {
+    private createQuestions(data: Game, questions: Question[]) {
+        data.questions && data.questions.forEach((q) => {
             let selections: SelectionObj[] = [];
-            for (let s of q.selections) {
-                let selection = new SelectionObj({ title: s.title, sid: s.id, toQuestionID: s.to_question });
-                selections.push(selection);
+            if (q.selections) {
+                for (let s of q.selections) {
+                    if (s.id) {
+                        let selection = new SelectionObj({ title: s.title, sid: s.id, toQuestionID: s.to_question });
+                        selections.push(selection);
+                    }
+
+                }
             }
-            // let question = new Question(q.title, q.description, q.id, q.image, selections);
-            let question = new Question({
-                title: q.title,
-                description: q.description,
-                qid: q.id,
-                image: q.image,
-                selections: selections
-            })
-            questions.push(question);
+            if (q.id) {
+                let question = new Question({
+                    title: q.title,
+                    description: q.description,
+                    qid: q.id,
+                    image: q.image,
+                    selections: selections
+                })
+                questions.push(question);
+            }
         })
     }
 }

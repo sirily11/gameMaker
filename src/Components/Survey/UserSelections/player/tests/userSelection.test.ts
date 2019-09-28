@@ -1,4 +1,4 @@
-import { Survey, UserSelections } from '../UserSelections';
+import { UserSelections } from '../UserSelections';
 import { Question } from '../question';
 
 describe("Test user selection", () => {
@@ -133,6 +133,34 @@ describe("Test user selection", () => {
         userSelections.next()
         let submitObj = userSelections.onSubmit()
         expect(submitObj.length).toBe(1)
+    })
+
+    it("Test change selection", () => {
+        userSelections.select(2)
+        expect(userSelections.currentQuestion).toBeDefined()
+        if (userSelections.currentQuestion && userSelections.currentQuestion.next) {
+            expect(userSelections.currentQuestion.next).toBeDefined()
+            expect(userSelections.currentQuestion.next.qid).toBe(3)
+            userSelections.select(1)
+            expect(userSelections.currentQuestion.next.qid).toBe(2)
+            userSelections.next()
+            expect(userSelections.currentQuestion.qid).toBe(2)
+
+        }
+    })
+
+    it("Test change selection after next and then prev", () => {
+        userSelections.select(2)
+        expect(userSelections.currentQuestion).toBeDefined()
+        if (userSelections.currentQuestion && userSelections.currentQuestion.next) {
+            userSelections.next()
+            userSelections.prev()
+            expect(userSelections.currentQuestion.next.selected).toBeUndefined()
+            userSelections.select(1)
+            userSelections.next()
+            expect(userSelections.currentQuestion.qid).toBe(2)
+
+        }
     })
 
 })

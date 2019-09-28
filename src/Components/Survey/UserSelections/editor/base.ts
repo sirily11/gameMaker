@@ -1,0 +1,102 @@
+import { config } from '../config';
+import axios from "axios"
+
+
+
+export abstract class Base<T, K>{
+
+    /**
+     * We will use this path to delete, update, create
+     */
+    path: string;
+    /**
+     * Object's id
+     */
+    id?: number;
+    /**
+     * Created object's data
+     */
+    object: T;
+    /**
+     * Children objects
+     */
+    children: K[];
+    /**
+     * If this has objects
+     */
+    hasChildren: boolean;
+
+
+    constructor(args: { id?: number, path: string, object: T, hasChildren?: boolean }) {
+        const { id, path, object, hasChildren } = args
+        this.path = path;
+        this.id = id;
+        this.object = object;
+        this.children = [];
+        this.hasChildren = hasChildren === undefined
+    }
+
+    /**
+     * Create new object<T>.
+     * And send it's data to the server
+     */
+    async create(): Promise<Base<T, K>> {
+        const { baseURL } = config
+        let url = `${baseURL}${this.path}`
+        let result = await axios.post<T>(url, this.object)
+        return this
+    }
+
+
+    /**
+     * Delete object.
+     * And send the deletion request to the server
+     */
+    async delete(): Promise<Base<T, K>> {
+        const { baseURL } = config
+        let url = `${baseURL}${this.path}`
+        let result = await axios.delete<T>(url)
+        return this;
+    }
+
+    /**
+     * Update the current object,
+     * and then send the update request to the server
+     * @param newData The object you want to update
+     */
+    async update(newData: T): Promise<T> {
+        const { baseURL } = config
+        let url = `${baseURL}${this.path}`
+        let result = await axios.patch<T>(url, newData)
+        this.object = newData;
+        return result.data;
+    }
+
+    async  addChild(child: K): Promise<void> {
+        if (this.hasChildren) {
+            this.children.push(child)
+        }
+    }
+
+    /**
+     * Delete child
+     * @param child Child you want to delete
+     */
+    async deleteChild(child: K) {
+        if (this.hasChildren) {
+            let found = this.children.findIndex((c) => (c as any).id === (child as any).id)
+            if (found > -1) {
+                this.children.splice(found, 1)
+            }
+        }
+
+    }
+
+    /**
+     * Update child
+     * @param child Child you want to update
+     */
+    async updateChild(child: K) {
+
+    }
+}
