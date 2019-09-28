@@ -2,9 +2,6 @@ name: Testing
 
 on:
   push:
-    paths:
-      - "*"
-      - "!*.md"
     branches:
       - master
 jobs:
