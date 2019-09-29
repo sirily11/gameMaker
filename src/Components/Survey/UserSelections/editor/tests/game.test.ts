@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Maker } from '../maker';
-import { Game, SurveyQuestion } from '../../model/model';
+import { Game, GameQuestion } from '../../model/model';
 import { QuestionMaker } from '../questions';
 import { SelectionMaker } from '../selection';
 
@@ -61,7 +61,8 @@ describe('Test game maker', () => {
             data: data
         });
         await maker.update({ id: 0, title: "New title", create_at: "1" })
-        expect(maker.object.title).toBe("New title")
+        if (maker.object)
+            expect(maker.object.title).toBe("New title")
     })
 
     it("Test Deletion", async () => {
@@ -85,7 +86,7 @@ describe('Test selection maker', () => {
     })
 
     it("Test add selections", async () => {
-        let data: SurveyQuestion = {
+        let data: GameQuestion = {
             id: 1,
             title: "New title",
             description: "Some description",
@@ -105,7 +106,7 @@ describe('Test selection maker', () => {
     })
 
     it("Test deletion", async () => {
-        let data: SurveyQuestion = {
+        let data: GameQuestion = {
             id: 1,
             title: "New title",
             description: "Some description",
@@ -125,7 +126,7 @@ describe('Test selection maker', () => {
     })
 
     it("Test update", async () => {
-        let data: SurveyQuestion = {
+        let data: GameQuestion = {
             id: 1,
             title: "New title",
             description: "Some description",
@@ -135,6 +136,85 @@ describe('Test selection maker', () => {
             data: data
         });
         await maker.update({ id: 0, title: "New title", description: "New Description" })
-        expect(maker.object.title).toBe("New title")
+        if (maker.object)
+            expect(maker.object.title).toBe("New title")
     })
 })
+
+describe('Test game build', () => {
+
+
+    let gameMaker: Maker
+
+    beforeEach(() => {
+        gameMaker = new Maker({})
+    })
+
+    it("Test game build", async () => {
+        let game: Game = {
+            id: 1,
+            title: "Test Survey",
+            create_at: "2019",
+            questions: [{
+                id: 1,
+                title: "Test Question 1",
+                description: "test question",
+                selections: [{
+                    id: 1,
+                    title: "To question 2",
+                    to_question: 2
+                }, {
+                    id: 2,
+                    title: "To question 3",
+                    to_question: 3
+                }]
+            }, {
+                id: 2,
+                title: "Test Question 2",
+                description: "test question",
+                selections: [{
+                    id: 3,
+                    title: "To question 3",
+                    to_question: 3
+                }, {
+                    id: 4,
+                    title: "Finished",
+                }]
+            }, {
+                id: 3,
+                title: "Last question",
+                description: "test question",
+                selections: []
+            }]
+        }
+        await gameMaker.build(game)
+        expect(gameMaker.object && gameMaker.object.title).toBe("Test Survey")
+        expect(gameMaker.children.length).toBe(3)
+        gameMaker.children.forEach((c, index) => {
+            expect(c.object && c.object.title).toBe(game.questions && game.questions[index].title)
+            expect(c.object && c.object.description).toBe(game.questions && game.questions[index].description)
+        })
+
+    })
+
+    it("Test question build", async () => {
+        let question: GameQuestion = {
+            title: "Test Question",
+            description: "Test Description",
+            selections: [{
+                title: "Selection 1"
+            }, {
+                title: "Selection 2"
+            }, {
+                title: "Selection 1"
+            }]
+
+        }
+        let questionMaker = new QuestionMaker({})
+        questionMaker.build(question)
+        expect(questionMaker.path).toBeDefined()
+        expect(questionMaker.children.length).toBe(3)
+    })
+
+})
+

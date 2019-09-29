@@ -1,9 +1,21 @@
 import { Base } from "./base";
-import { SurveyQuestion, SurveySelection } from "../model/model";
+import { GameQuestion } from "../model/model";
 import { SelectionMaker } from "./selection";
 
-export class QuestionMaker extends Base<SurveyQuestion, SelectionMaker>{
-    constructor(args: { id?: number, path?: string, object: SurveyQuestion, hasChildren?: boolean }) {
+export class QuestionMaker extends Base<GameQuestion, SelectionMaker>{
+
+    constructor(args: { id?: number, path?: string, object?: GameQuestion, hasChildren?: boolean }) {
         super({ ...args, path: "" })
+    }
+
+    public async build(data: GameQuestion): Promise<Base<GameQuestion, SelectionMaker>> {
+        data.selections && data.selections.forEach((selection) => {
+            let s = new SelectionMaker({});
+            s.build(selection)
+            this.addChild(s)
+        })
+
+        this.object = { ...data, selections: undefined };
+        return this
     }
 }

@@ -36,7 +36,7 @@ export class UserSelections {
      * Call this first
      * @param data Survey data
      */
-    async build(data: Game): Promise<UserSelections> {
+    public async build(data: Game): Promise<UserSelections> {
         return new Promise((resolve, reject) => {
             this.title = data.title
             // Question list
@@ -53,7 +53,7 @@ export class UserSelections {
      * 
      * @param uid user ID
      */
-    setUserID(uid: number): UserSelections {
+    public setUserID(uid: number): UserSelections {
         this.user_id = uid
         return this
     }
@@ -61,7 +61,7 @@ export class UserSelections {
     /**
      * To the next page
      */
-    next(time_takes: number = 0) {
+    public next(time_takes: number = 0) {
         if (this.currentQuestion) {
             let prev_time = this.currentQuestion.time_takes
             this.currentQuestion.update_time(prev_time + time_takes)
@@ -73,7 +73,7 @@ export class UserSelections {
     /**
      * Go to prev page
      */
-    prev() {
+    public prev() {
         this.currentQuestion = this.currentQuestion && this.currentQuestion.parent
     }
 
@@ -81,7 +81,7 @@ export class UserSelections {
      * This method will return true if only if
      * - all of the selections don't have next question
      */
-    isFinished(): boolean {
+    public isFinished(): boolean {
         if (this.currentQuestion) {
             for (let s of this.currentQuestion.selections) {
                 if (s.toQuestion !== undefined) return false
@@ -97,14 +97,14 @@ export class UserSelections {
      * otherwise, true
      * @returns true if next question exist
      */
-    hasNext(): boolean {
+    public hasNext(): boolean {
         return (this.currentQuestion && this.currentQuestion.next) !== undefined
     }
 
     /**
      * Has prev page
      */
-    hasPrev(): boolean {
+    public hasPrev(): boolean {
         return (this.currentQuestion && this.currentQuestion.parent) !== undefined
     }
 
@@ -114,7 +114,7 @@ export class UserSelections {
      * if user selected some option doesn't exist, throw error
      * @param sid the selection you want to select
      */
-    select(sid: number) {
+    public select(sid: number) {
         if (this.currentQuestion) {
             let found = this.currentQuestion.selections.find((s) => s.sid === sid) !== undefined
             if (!found) {
@@ -131,7 +131,7 @@ export class UserSelections {
     /**
      * Get the max depth of the tree based on the current question
      */
-    async getMaxDepthOfTree(): Promise<number> {
+    public async getMaxDepthOfTree(): Promise<number> {
         return new Promise((resolve, reject) => {
             if (this.currentQuestion) {
                 let depth = this.findMax(this.currentQuestion)
@@ -148,7 +148,7 @@ export class UserSelections {
      * This will be called when the survey is finished
      * @return submitobject
      */
-    onSubmit(time_takes?: number): SubmitObject[] {
+    public onSubmit(time_takes?: number): SubmitObject[] {
         if (!this.isFinished()) {
             throw new Error("Survey is not finished")
         }

@@ -1,6 +1,7 @@
 import { Question } from './question';
+import { BasePlayer } from "./base"
 
-export class SelectionObj {
+export class SelectionObj extends BasePlayer<Question>{
     /**
      *  Next question's id
      */
@@ -14,6 +15,7 @@ export class SelectionObj {
     isSelected: boolean;
 
     constructor(args: { title: string, sid: number, toQuestionID?: number }) {
+        super();
         const { title, sid, toQuestionID } = args
         this.title = title;
         this.sid = sid;
@@ -21,14 +23,14 @@ export class SelectionObj {
         this.isSelected = false;
     }
 
-    select(from_question: Question) {
+    public select(from_question: Question) {
         this.isSelected = true
         if (this.toQuestion) {
             this.toQuestion.parent = from_question
         }
     }
 
-    deselect() {
+    public deselect() {
         this.isSelected = false
         if (this.toQuestion) {
             if (this.toQuestion.selected) this.toQuestion.selected.isSelected = false

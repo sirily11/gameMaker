@@ -7,18 +7,18 @@ export interface Game {
     id: number
     title: string
     create_at: string
-    questions?: SurveyQuestion[]
+    questions?: GameQuestion[]
 }
 
-export interface SurveyQuestion {
+export interface GameQuestion {
     id?: number
     description: string
     title: string
     image?: string
-    selections?: SurveySelection[]
+    selections?: GameSelection[]
 }
 
-export interface SurveySelection {
+export interface GameSelection {
     id?: number
     title: string
     to_question?: number

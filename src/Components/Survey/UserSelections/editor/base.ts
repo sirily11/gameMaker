@@ -16,7 +16,7 @@ export abstract class Base<T, K>{
     /**
      * Created object's data
      */
-    object: T;
+    object?: T;
     /**
      * Children objects
      */
@@ -27,7 +27,7 @@ export abstract class Base<T, K>{
     hasChildren: boolean;
 
 
-    constructor(args: { id?: number, path: string, object: T, hasChildren?: boolean }) {
+    constructor(args: { id?: number, path: string, object?: T, hasChildren?: boolean }) {
         const { id, path, object, hasChildren } = args
         this.path = path;
         this.id = id;
@@ -37,10 +37,16 @@ export abstract class Base<T, K>{
     }
 
     /**
+     * Call this at the begining
+     * @param data Data from internet
+     */
+    public abstract async build(data: T): Promise<Base<T, K>>
+
+    /**
      * Create new object<T>.
      * And send it's data to the server
      */
-    async create(): Promise<Base<T, K>> {
+    public async create(): Promise<Base<T, K>> {
         const { baseURL } = config
         let url = `${baseURL}${this.path}`
         let result = await axios.post<T>(url, this.object)
@@ -52,7 +58,7 @@ export abstract class Base<T, K>{
      * Delete object.
      * And send the deletion request to the server
      */
-    async delete(): Promise<Base<T, K>> {
+    public async delete(): Promise<Base<T, K>> {
         const { baseURL } = config
         let url = `${baseURL}${this.path}`
         let result = await axios.delete<T>(url)
@@ -64,7 +70,7 @@ export abstract class Base<T, K>{
      * and then send the update request to the server
      * @param newData The object you want to update
      */
-    async update(newData: T): Promise<T> {
+    public async update(newData: T): Promise<T> {
         const { baseURL } = config
         let url = `${baseURL}${this.path}`
         let result = await axios.patch<T>(url, newData)
@@ -72,7 +78,11 @@ export abstract class Base<T, K>{
         return result.data;
     }
 
-    async  addChild(child: K): Promise<void> {
+    /**
+     * Add child to children
+     * @param child Child
+     */
+    public async  addChild(child: K): Promise<void> {
         if (this.hasChildren) {
             this.children.push(child)
         }
@@ -82,7 +92,7 @@ export abstract class Base<T, K>{
      * Delete child
      * @param child Child you want to delete
      */
-    async deleteChild(child: K) {
+    public async deleteChild(child: K) {
         if (this.hasChildren) {
             let found = this.children.findIndex((c) => (c as any).id === (child as any).id)
             if (found > -1) {
@@ -96,7 +106,7 @@ export abstract class Base<T, K>{
      * Update child
      * @param child Child you want to update
      */
-    async updateChild(child: K) {
+    public async updateChild(child: K) {
 
     }
 }

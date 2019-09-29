@@ -52,7 +52,7 @@ export class Question {
      * Update the time_takes
      * @param new_time new time
      */
-    update_time(new_time: number) {
+    public update_time(new_time: number) {
         this.time_takes = new_time
     }
 
@@ -61,7 +61,7 @@ export class Question {
      * and then set the question.next to the selection.toQuestion
      * @param sid Selection id you want to select
      */
-    select(sid: number) {
+    public select(sid: number) {
         this.deselect();
         for (let s of this.selections) {
             if (s.sid === sid) {
