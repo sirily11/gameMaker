@@ -198,7 +198,7 @@ describe('Test game build', () => {
     })
 
     it("Test question build", async () => {
-        let question: GameQuestion = {
+        const question: GameQuestion = {
             title: "Test Question",
             description: "Test Description",
             selections: [{
@@ -210,10 +210,10 @@ describe('Test game build', () => {
             }]
 
         }
-        let questionMaker = new QuestionMaker({})
-        questionMaker.build(question)
-        expect(questionMaker.path).toBeDefined()
-        expect(questionMaker.children.length).toBe(3)
+        let questionMaker = new QuestionMaker({});
+        questionMaker.build(question);
+        expect(questionMaker.path).toBeDefined();
+        expect(questionMaker.children.length).toBe(3);
     })
 
 })

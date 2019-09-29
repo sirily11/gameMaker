@@ -10,24 +10,17 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./Components/Login/Login";
 import Home from "./Components/Home/Home";
-import DisplaySurvey from "./Components/Survey/DisSurvey";
-import EditSurvey from "./Components/Survey/ESurvey";
 import Dashboard from "./Components/Dashboard/Dashboard";
+import { EditContext, EditProvider } from "./Components/models/editState";
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      logined: false
-    };
-  }
-
   render() {
     return (
-      <HashRouter>
-        <div>
-          <Switch>
-            <Route
+      <EditProvider>
+        <HashRouter>
+          <div>
+            <Switch>
+              {/* <Route
               exact
               path="/"
               render={props =>
@@ -42,9 +35,9 @@ class App extends Component {
                   <Redirect to="/home" />
                 )
               }
-            />
-            <Route exact path="/home" render={props => <Home {...props} logined={this.state.logined} />} />
-            <Route
+            /> */}
+              <Route exact path="/home" render={props => <Home />} />
+              {/* <Route
               exact
               path="/survey/:sid"
               render={props => <DisplaySurvey {...props} />}
@@ -53,14 +46,15 @@ class App extends Component {
               exact
               path="/edit/survey/:sid"
               render={props => <EditSurvey {...props} />}
-            />
-            <Route
-              path="/dashboard"
-              render={props => <Dashboard {...props} />}
-            />
-          </Switch>
-        </div>
-      </HashRouter>
+            /> */}
+              <Route
+                path="/dashboard"
+                render={props => <Dashboard {...props} />}
+              />
+            </Switch>
+          </div>
+        </HashRouter>
+      </EditProvider>
     );
   }
 }

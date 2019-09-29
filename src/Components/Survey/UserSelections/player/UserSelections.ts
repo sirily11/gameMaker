@@ -61,7 +61,7 @@ export class UserSelections {
     /**
      * To the next page
      */
-    public next(time_takes: number = 0) {
+    public next(time_takes: number = 0) : void {
         if (this.currentQuestion) {
             let prev_time = this.currentQuestion.time_takes
             this.currentQuestion.update_time(prev_time + time_takes)
@@ -73,7 +73,7 @@ export class UserSelections {
     /**
      * Go to prev page
      */
-    public prev() {
+    public prev() : void {
         this.currentQuestion = this.currentQuestion && this.currentQuestion.parent
     }
 
@@ -114,7 +114,7 @@ export class UserSelections {
      * if user selected some option doesn't exist, throw error
      * @param sid the selection you want to select
      */
-    public select(sid: number) {
+    public select(sid: number) : void {
         if (this.currentQuestion) {
             let found = this.currentQuestion.selections.find((s) => s.sid === sid) !== undefined
             if (!found) {
@@ -209,7 +209,7 @@ export class UserSelections {
      * 
      * @param questions List of questions
      */
-    private configQuestions(questions: Question[]) {
+    private configQuestions(questions: Question[]) : void {
         questions.forEach((q) => {
             q.selections.forEach((s) => {
                 if (s.toQuestionID) {
@@ -230,7 +230,7 @@ export class UserSelections {
      * @param data data from server
      * @param questions an empty question list
      */
-    private createQuestions(data: Game, questions: Question[]) {
+    private createQuestions(data: Game, questions: Question[]) : void {
         data.questions && data.questions.forEach((q) => {
             let selections: SelectionObj[] = [];
             if (q.selections) {
