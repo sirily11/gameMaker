@@ -101,12 +101,4 @@ export abstract class Base<T, K>{
         }
 
     }
-
-    /**
-     * Update child
-     * @param child Child you want to update
-     */
-    public async updateChild(child: K) {
-
-    }
 }

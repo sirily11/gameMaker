@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { EditContext } from "../models/editState";
 import SelectionDisplay from "./SelectionDisplay";
 import {
@@ -8,8 +8,12 @@ import {
   Card,
   CardContent,
   Typography,
-  CardMedia
+  CardMedia,
+  Collapse
 } from "@material-ui/core";
+import { GameQuestion } from "../Survey/UserSelections/model/model";
+import EditQuestionPopup from "./EditQuestionPopup";
+import { Button } from "semantic-ui-react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,27 +49,54 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function QuestionDisplay() {
   const editContext = useContext(EditContext);
+  const [open, setOpen] = useState<boolean>(false);
+  const [editIndex, setEditIndex] = useState<number>(-1);
+
+  const [title, setTitle] = useState<string>();
+  const [description, setDescription] = useState<string>();
+  const [imageURL, setImageURL] = useState<string>();
+
   const { game } = editContext;
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       {game &&
-        game.children.map(c => (
+        game.children.map((c, index) => (
           <Card className={classes.card}>
             <CardContent>
-              <Typography>{c.object && c.object.title}</Typography>
+              <Typography component="h5" variant="h5">
+                {c.object && c.object.title}
+                <Button
+                  style={{ marginLeft: 10 }}
+                  icon="edit"
+                  onClick={() => {
+                    setOpen(true);
+                    setEditIndex(index);
+                  }}
+                ></Button>
+              </Typography>
+
               <Typography component="p">
                 {c.object && c.object.description}
               </Typography>
-              <CardMedia
-                className={classes.media}
-                image="https://cdn.vox-cdn.com/thumbor/WlSQzgnWqpsktGQblwuHk8VCtJE=/1400x1400/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/15961732/2019_03_14_at_9.01_AM.png"
-              ></CardMedia>
+              <Collapse in={c.object && c.object.image !== undefined}>
+                <CardMedia
+                  className={classes.media}
+                  image={c.object && c.object.image}
+                ></CardMedia>
+              </Collapse>
               {c && <SelectionDisplay question={c}></SelectionDisplay>}
             </CardContent>
           </Card>
         ))}
+      {game && editIndex >= 0 && (
+        <EditQuestionPopup
+          open={open}
+          close={() => setOpen(false)}
+          question={game.children[editIndex]}
+        ></EditQuestionPopup>
+      )}
     </div>
   );
 }

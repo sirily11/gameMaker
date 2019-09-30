@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { EditContext } from "../models/editState";
 import {
   Fade,
@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { Dropdown, Card, Button } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
+import { GameSelection } from "../Survey/UserSelections/model/model";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,8 +31,20 @@ export default function PopupMenu() {
     selectedSelection,
     selectedSelectionPosition,
     game,
-    closePopUp
+    closePopUp,
+    update
   } = editContext;
+  let presetValue: string;
+  let presetToQuestion: number | undefined;
+
+  if (selectedSelection && selectedSelection.object) {
+    presetValue = selectedSelection.object.title;
+    presetToQuestion = selectedSelection.object.to_question;
+  }
+
+  const [title, setTitle] = useState<string | undefined>();
+  const [selected, setSelected] = useState<number | undefined>();
+
   return (
     <Popper
       open={selectedSelectionPosition !== undefined}
@@ -52,13 +65,20 @@ export default function PopupMenu() {
                     fullWidth
                     className={classes.title}
                     label="Title"
-                    value={selectedSelection.object.title}
+                    defaultValue={presetValue}
+                    onChange={e => {
+                      setTitle(e.target.value);
+                    }}
                   ></TextField>
                   <Dropdown
+                    defaultValue={presetToQuestion}
                     search
                     selection
                     fluid
                     placeholder="To Question"
+                    onChange={(e, { value }) => {
+                      setSelected(value as number);
+                    }}
                     options={game.children.map(question => {
                       return {
                         key: question.object && question.object.title,
@@ -69,8 +89,29 @@ export default function PopupMenu() {
                   ></Dropdown>
                 </Card.Content>
                 <Card.Content extra>
-                  <Button basic color="green">
-                    Approve
+                  <Button
+                    basic
+                    color="green"
+                    onClick={() => {
+                      console.log(title, selected);
+                      if (
+                        selectedSelection &&
+                        selectedSelection.object &&
+                        selectedSelection.object.to_question
+                      ) {
+                        let newGameselection: GameSelection = {
+                          ...selectedSelection.object,
+                          title: title ? title : presetValue,
+                          to_question: selected ? selected : presetToQuestion
+                        };
+                        selectedSelection.object = newGameselection;
+                        selectedSelection.update(newGameselection);
+                        update(game);
+                      }
+                      closePopUp();
+                    }}
+                  >
+                    Submit
                   </Button>
                   <Button
                     basic
@@ -79,7 +120,7 @@ export default function PopupMenu() {
                       closePopUp();
                     }}
                   >
-                    Decline
+                    Close
                   </Button>
                 </Card.Content>
               </Card>

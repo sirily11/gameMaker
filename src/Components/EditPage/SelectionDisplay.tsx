@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   RadioGroup,
   FormControlLabel,
@@ -19,6 +19,16 @@ interface Props {
 export default function SelectionDisplay(props: Props) {
   const { question } = props;
   const editContext = useContext(EditContext);
+  const { selectedSelection } = editContext;
+
+  const isSelected = (id: number | undefined): boolean => {
+    if (selectedSelection && selectedSelection.object && id) {
+      if (selectedSelection.object.id === id) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   return (
     <div>
@@ -26,13 +36,17 @@ export default function SelectionDisplay(props: Props) {
         {question.children.map(s => (
           <FormControlLabel
             onClick={e => {
-              console.log(e);
               editContext.select(e.currentTarget, s);
+            }}
+            style={{
+              backgroundColor: isSelected(s.object && s.object.id)
+                ? "yellow"
+                : undefined
             }}
             key={s.id}
             value={s.object && s.object.title}
             control={<Radio />}
-            label={s.object && s.object.title}
+            label={s.object && s.object.id}
           />
         ))}
       </RadioGroup>

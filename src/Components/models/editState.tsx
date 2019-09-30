@@ -13,6 +13,7 @@ interface EditState {
     anchor: HTMLElement | undefined,
     selection: SelectionMaker | undefined
   ): void;
+  update(data: Maker): void;
 }
 
 interface EditProps {}
@@ -26,6 +27,8 @@ const data = {
       id: 1,
       title: "Test Question 1",
       description: "test question",
+      image:
+        "https://cdn.vox-cdn.com/thumbor/WlSQzgnWqpsktGQblwuHk8VCtJE=/1400x1400/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/15961732/2019_03_14_at_9.01_AM.png",
       selections: [
         {
           id: 1,
@@ -43,6 +46,8 @@ const data = {
       id: 2,
       title: "Test Question 2",
       description: "test question",
+      image:
+        "https://cdn.vox-cdn.com/thumbor/WlSQzgnWqpsktGQblwuHk8VCtJE=/1400x1400/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/15961732/2019_03_14_at_9.01_AM.png",
       selections: [
         {
           id: 3,
@@ -70,7 +75,8 @@ export class EditProvider extends Component<EditProps, EditState> {
     this.state = {
       build: this.build,
       select: this.select,
-      closePopUp: this.closePopUp
+      closePopUp: this.closePopUp,
+      update: this.update
     };
   }
 
@@ -78,6 +84,9 @@ export class EditProvider extends Component<EditProps, EditState> {
     await this.build(data);
   }
 
+  /**
+   * when user select the choice
+   */
   select = (
     anchor: HTMLElement | undefined,
     selection: SelectionMaker | undefined
@@ -88,6 +97,16 @@ export class EditProvider extends Component<EditProps, EditState> {
     });
   };
 
+  /**
+   * Update the game object
+   */
+  update = (data: Maker) => {
+    this.setState({ game: data });
+  };
+
+  /**
+   * Close user selection pannel
+   */
   closePopUp = () => {
     this.setState({
       selectedSelectionPosition: undefined
@@ -116,7 +135,8 @@ const context: EditState = {
     return Promise.resolve();
   },
   select: (e: HTMLElement, s: SelectionMaker) => {},
-  closePopUp: () => {}
+  closePopUp: () => {},
+  update: () => {}
 };
 
 export const EditContext = React.createContext(context);
