@@ -91,10 +91,13 @@ export class EditProvider extends Component<EditProps, EditState> {
     anchor: HTMLElement | undefined,
     selection: SelectionMaker | undefined
   ) => {
-    this.setState({
-      selectedSelectionPosition: anchor,
-      selectedSelection: selection
-    });
+    this.setState({ selectedSelectionPosition: undefined });
+    setTimeout(() => {
+      this.setState({
+        selectedSelectionPosition: anchor,
+        selectedSelection: selection
+      });
+    }, 10);
   };
 
   /**

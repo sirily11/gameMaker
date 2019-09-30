@@ -18,4 +18,5 @@ export class QuestionMaker extends Base<GameQuestion, SelectionMaker>{
         this.object = { ...data, selections: undefined };
         return this
     }
+
 }

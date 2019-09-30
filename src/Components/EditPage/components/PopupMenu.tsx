@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { EditContext } from "../models/editState";
+import { EditContext } from "../../models/editState";
 import {
   Fade,
   CardContent,
@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import { Dropdown, Card, Button } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
-import { GameSelection } from "../Survey/UserSelections/model/model";
+import { GameSelection } from "../../Survey/UserSelections/model/model";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,6 +40,7 @@ export default function PopupMenu() {
   if (selectedSelection && selectedSelection.object) {
     presetValue = selectedSelection.object.title;
     presetToQuestion = selectedSelection.object.to_question;
+
   }
 
   const [title, setTitle] = useState<string | undefined>();
@@ -50,7 +51,7 @@ export default function PopupMenu() {
       open={selectedSelectionPosition !== undefined}
       anchorEl={selectedSelectionPosition}
       transition
-      placement="right-start"
+      placement="right"
       className={classes.popup}
     >
       {({ TransitionProps }) => (
@@ -94,11 +95,7 @@ export default function PopupMenu() {
                     color="green"
                     onClick={() => {
                       console.log(title, selected);
-                      if (
-                        selectedSelection &&
-                        selectedSelection.object &&
-                        selectedSelection.object.to_question
-                      ) {
+                      if (selectedSelection && selectedSelection.object) {
                         let newGameselection: GameSelection = {
                           ...selectedSelection.object,
                           title: title ? title : presetValue,

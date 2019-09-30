@@ -7,12 +7,13 @@ import {
   Theme,
   createStyles,
   createMuiTheme,
-  MuiThemeProvider,
+  MuiThemeProvider
 } from "@material-ui/core";
 import { purple, lightBlue } from "@material-ui/core/colors";
 import QuestionDisplay from "./QuestionDisplay";
 import { EditContext } from "../models/editState";
-import PopupMenu from "./PopupMenu";
+import PopupMenu from "./components/PopupMenu";
+import FloatButton from "./components/FloatButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,6 +52,8 @@ const theme = createMuiTheme({
 
 export default function EditPage() {
   const classes = useStyles();
+  const editContext = useContext(EditContext);
+  const { selectedSelectionPosition } = editContext;
 
   const appbar = () => (
     <AppBar color="primary" elevation={0} className={classes.appbar}>
@@ -64,8 +67,9 @@ export default function EditPage() {
   return (
     <MuiThemeProvider theme={theme}>
       {appbar()}
-      <PopupMenu></PopupMenu>
+      {selectedSelectionPosition && <PopupMenu></PopupMenu>}
       <QuestionDisplay></QuestionDisplay>
+      <FloatButton></FloatButton>
     </MuiThemeProvider>
   );
 }
