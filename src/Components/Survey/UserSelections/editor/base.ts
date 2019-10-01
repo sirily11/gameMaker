@@ -10,10 +10,6 @@ export abstract class Base<T, K>{
      */
     path: string;
     /**
-     * Object's id
-     */
-    id?: number;
-    /**
      * Created object's data
      */
     object?: T;
@@ -27,14 +23,18 @@ export abstract class Base<T, K>{
     hasChildren: boolean;
 
 
-    constructor(args: { id?: number, path: string, object?: T, hasChildren?: boolean }) {
-        const { id, path, object, hasChildren } = args
+    constructor(args: { path: string, object?: T, hasChildren?: boolean }) {
+        const { path, object, hasChildren } = args
         this.path = path;
-        this.id = id;
         this.object = object;
         this.children = [];
         this.hasChildren = hasChildren === undefined
     }
+
+    /**
+     * Build tree
+     */
+    public abstract toJSON(): T | undefined
 
     /**
      * Call this at the begining

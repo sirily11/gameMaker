@@ -64,7 +64,7 @@ export default function SelectionDisplay(props: Props) {
                 ? "yellow"
                 : undefined
             }}
-            key={s.id}
+            key={s.object && s.object.id}
             value={s.object && s.object.title}
             control={<Radio />}
             label={

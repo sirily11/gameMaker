@@ -1,5 +1,6 @@
 import { Question } from './question';
 import { BasePlayer } from "./base"
+import { TreeData } from './UserSelections';
 
 export class SelectionObj extends BasePlayer<Question>{
     /**
@@ -38,6 +39,10 @@ export class SelectionObj extends BasePlayer<Question>{
             this.toQuestion.parent = undefined
             this.toQuestion.next = undefined
         }
+    }
+
+    public toTree(): TreeData {
+        return { name: this.title, children: this.toQuestion ? [this.toQuestion && this.toQuestion.toTree()] : undefined }
     }
 
 }

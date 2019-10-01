@@ -11,4 +11,10 @@ export class SelectionMaker extends Base<GameSelection, any>{
         this.object = data;
         return this;
     }
+
+    public toJSON(): GameSelection | undefined {
+        return this.object;
+    }
+
+
 }

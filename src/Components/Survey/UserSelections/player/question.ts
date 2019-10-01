@@ -1,4 +1,5 @@
 import { SelectionObj } from './selection';
+import { TreeData } from './UserSelections';
 
 
 export class Question {
@@ -76,6 +77,13 @@ export class Question {
         if (this.selected) {
             this.selected.deselect()
             this.selected = undefined;
+        }
+    }
+
+    public toTree(): TreeData {
+        return {
+            name: this.title,
+            children: this.selections.map((s) => s.toTree())
         }
     }
 }

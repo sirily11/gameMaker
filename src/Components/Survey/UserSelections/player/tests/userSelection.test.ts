@@ -1,4 +1,4 @@
-import { UserSelections } from '../UserSelections';
+import { UserSelections, TreeData } from '../UserSelections';
 import { Question } from '../question';
 
 describe("Test user selection", () => {
@@ -163,4 +163,55 @@ describe("Test user selection", () => {
         }
     })
 
+    it("Test to tree", async () => {
+
+        let tree = await userSelections.toTreeData()
+        expect(tree).toBeDefined()
+    })
+})
+
+describe("Test build tree", () => {
+    let data = {
+        id: 1,
+        title: "Test Survey",
+        create_at: "2019",
+        questions: [{
+            id: 1,
+            title: "Test Question 1",
+            description: "test question",
+            selections: [{
+                id: 1,
+                title: "To question 2",
+                to_question: 2
+            }, {
+                id: 2,
+                title: "To question 3",
+                to_question: 3
+            }]
+        }, {
+            id: 2,
+            title: "Test Question 2",
+            description: "test question",
+
+        }, {
+            id: 3,
+            title: "Last question",
+            description: "test question",
+            selections: []
+        }]
+    }
+    let userSelection: UserSelections
+
+    beforeEach(() => {
+        userSelection = new UserSelections()
+        userSelection.build(data)
+    })
+
+    it("Test build", async () => {
+        let tree = await userSelection.toTreeData()
+        expect(tree).toBeDefined()
+
+        expect(tree.children && tree.children.length).toBe(2)
+        expect(tree.children && tree.children[0].name).toBe("To question 2")
+    })
 })

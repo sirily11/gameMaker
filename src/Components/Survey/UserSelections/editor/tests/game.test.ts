@@ -216,5 +216,59 @@ describe('Test game build', () => {
         expect(questionMaker.children.length).toBe(3);
     })
 
+
+
 })
 
+describe("Test to json", () => {
+    let maker: Maker;
+    let data: Game = {
+        id: 1,
+        title: "Test Survey",
+        create_at: "2019",
+        questions: [{
+            id: 1,
+            title: "Test Question 1",
+            description: "test question",
+            selections: [{
+                id: 1,
+                title: "To question 2",
+                to_question: 2
+            }, {
+                id: 2,
+                title: "To question 3",
+                to_question: 3
+            }]
+        }, {
+            id: 2,
+            title: "Test Question 2",
+            description: "test question",
+            selections: [{
+                id: 3,
+                title: "To question 3",
+                to_question: 3
+            }, {
+                id: 4,
+                title: "Finished",
+            }]
+        }, {
+            id: 3,
+            title: "Last question",
+            description: "test question",
+            selections: []
+        }]
+    }
+
+    beforeEach(async () => {
+        maker = new Maker({})
+        await maker.build(data)
+
+    })
+
+    test("Test to JSON", async () => {
+        let json = maker.toJSON()
+        expect(json).toBeDefined()
+        expect(json).toEqual(data)
+        console.log(json)
+    })
+})

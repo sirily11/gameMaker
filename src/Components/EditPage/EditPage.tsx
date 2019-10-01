@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -7,13 +7,15 @@ import {
   Theme,
   createStyles,
   createMuiTheme,
-  MuiThemeProvider
+  MuiThemeProvider,
+  Button
 } from "@material-ui/core";
 import { purple, lightBlue } from "@material-ui/core/colors";
 import QuestionDisplay from "./QuestionDisplay";
 import { EditContext } from "../models/editState";
 import PopupMenu from "./components/PopupMenu";
 import FloatButton from "./components/FloatButton";
+import TreeView from "./TreeView";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,6 +56,7 @@ export default function EditPage() {
   const classes = useStyles();
   const editContext = useContext(EditContext);
   const { selectedSelectionPosition } = editContext;
+  const [openTreeview, setopenTreeview] = useState(false);
 
   const appbar = () => (
     <AppBar color="primary" elevation={0} className={classes.appbar}>
@@ -70,6 +73,24 @@ export default function EditPage() {
       {selectedSelectionPosition && <PopupMenu></PopupMenu>}
       <QuestionDisplay></QuestionDisplay>
       <FloatButton></FloatButton>
+      <Button
+        style={{
+          zIndex: 1000,
+          position: "fixed",
+          right: 10,
+          top: 10,
+          color: "white"
+        }}
+        onClick={() => setopenTreeview(true)}
+      >
+        Show Tree
+      </Button>
+      {openTreeview && (
+        <TreeView
+          open={openTreeview}
+          onClose={() => setopenTreeview(false)}
+        ></TreeView>
+      )}
     </MuiThemeProvider>
   );
 }

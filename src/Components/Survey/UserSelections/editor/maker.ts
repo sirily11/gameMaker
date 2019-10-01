@@ -21,4 +21,8 @@ export class Maker extends Base<Game, QuestionMaker> {
         return this;
     }
 
+    public toJSON(): Game | undefined {
+        return { ...this.object, questions: this.children.map((q) => q.toJSON()) } as Game
+    }
+
 }

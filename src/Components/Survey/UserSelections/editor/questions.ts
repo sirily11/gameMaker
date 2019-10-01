@@ -4,6 +4,7 @@ import { SelectionMaker } from "./selection";
 
 export class QuestionMaker extends Base<GameQuestion, SelectionMaker>{
 
+
     constructor(args: { id?: number, path?: string, object?: GameQuestion, hasChildren?: boolean }) {
         super({ ...args, path: "" })
     }
@@ -17,6 +18,10 @@ export class QuestionMaker extends Base<GameQuestion, SelectionMaker>{
 
         this.object = { ...data, selections: undefined };
         return this
+    }
+
+    public toJSON(): GameQuestion | undefined {
+        return { ...this.object, selections: this.children.map((s) => s.toJSON()) } as GameQuestion
     }
 
 }
