@@ -10,7 +10,8 @@ import {
   Typography,
   CardMedia,
   Collapse,
-  Tooltip
+  Tooltip,
+  Fade
 } from "@material-ui/core";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import EditQuestionPopup from "./components/EditQuestionPopup";
@@ -136,71 +137,75 @@ export default function QuestionDisplay() {
     <div className={classes.root}>
       {game &&
         game.children.map((c, index) => (
-          <Card className={classes.card}>
-            <CardContent>
-              <Typography component="h5" variant="h5">
-                {c.object && c.object.title}
-                <Button
-                  style={{ marginLeft: 10 }}
-                  icon="edit"
-                  size="mini"
-                  circular
-                  onClick={() => {
-                    setOpen(true);
-                    setEditIndex(index);
-                  }}
-                ></Button>
-                <Button
-                  style={{ marginLeft: 10 }}
-                  icon="add"
-                  size="mini"
-                  circular
-                  onClick={() => {
-                    setEditIndex(index);
-                    setOpenAddSelection(true);
-                  }}
-                ></Button>
-                <Button
-                  style={{ marginLeft: 10 }}
-                  icon="trash"
-                  loading={isLoading}
-                  size="mini"
-                  circular
-                  onClick={async () => {
-                    // Delete the current question
-                    let confirmation = window.confirm("Do you want to delete?");
-                    if (confirmation) {
-                      setisLoading(true);
-                      await c.delete();
-                      if (game) {
-                        await game.deleteChild(c);
+          <Fade in={true}>
+            <Card className={classes.card}>
+              <CardContent>
+                <Typography component="h5" variant="h5">
+                  {c.object && c.object.title}
+                  <Button
+                    style={{ marginLeft: 10 }}
+                    icon="edit"
+                    size="mini"
+                    circular
+                    onClick={() => {
+                      setOpen(true);
+                      setEditIndex(index);
+                    }}
+                  ></Button>
+                  <Button
+                    style={{ marginLeft: 10 }}
+                    icon="add"
+                    size="mini"
+                    circular
+                    onClick={() => {
+                      setEditIndex(index);
+                      setOpenAddSelection(true);
+                    }}
+                  ></Button>
+                  <Button
+                    style={{ marginLeft: 10 }}
+                    icon="trash"
+                    loading={isLoading}
+                    size="mini"
+                    circular
+                    onClick={async () => {
+                      // Delete the current question
+                      let confirmation = window.confirm(
+                        "Do you want to delete?"
+                      );
+                      if (confirmation) {
+                        setisLoading(true);
+                        await c.delete();
+                        if (game) {
+                          await game.deleteChild(c);
+                        }
+                        setisLoading(false);
+                        update(game);
                       }
-                      setisLoading(false);
-                      update(game);
-                    }
-                  }}
-                ></Button>
-              </Typography>
+                    }}
+                  ></Button>
+                </Typography>
 
-              <Typography component="p">
-                {c.object && c.object.description}
-              </Typography>
-              {c.object && c.object.image && (
-                <CardMedia
-                  className={classes.media}
-                  image={c.object && c.object.image}
-                ></CardMedia>
-              )}
-              {c && <SelectionDisplay question={c}></SelectionDisplay>}
-            </CardContent>
-            {isEnd(c) ? (
-              <Tooltip title="This is the end of the game">
-                <Label as="a" color="red" tag style={{ marginBottom: 10 }}>
-                  End
-                </Label>
-              </Tooltip>
-            ) : null}
-          </Card>
+                <Typography component="p">
+                  {c.object && c.object.description}
+                </Typography>
+                {c.object && c.object.image && (
+                  <CardMedia
+                    className={classes.media}
+                    image={c.object && c.object.image}
+                  ></CardMedia>
+                )}
+                {c && <SelectionDisplay question={c}></SelectionDisplay>}
+              </CardContent>
+              {isEnd(c) ? (
+                <Tooltip title="This is the end of the game">
+                  <Label as="a" color="red" tag style={{ marginBottom: 10 }}>
+                    End
+                  </Label>
+                </Tooltip>
+              ) : null}
+            </Card>
+          </Fade>
         ))}
       {game && editIndex >= 0 && (
         <EditQuestionPopup

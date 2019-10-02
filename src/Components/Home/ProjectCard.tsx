@@ -12,10 +12,11 @@ interface Props {
   title: string;
   description: string;
   navLink: string;
+  onDelete(): void;
 }
 
 export default function ProjectCard(props: Props) {
-  const { title, description, navLink } = props;
+  const { title, description, navLink, onDelete } = props;
 
   return (
     <Card>
@@ -29,7 +30,7 @@ export default function ProjectCard(props: Props) {
         <NavLink to={navLink}>
           <Button>Edit</Button>
         </NavLink>
-        <Button>Delete</Button>
+        <Button onClick={onDelete}>Delete</Button>
       </CardActions>
     </Card>
   );

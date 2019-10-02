@@ -74,11 +74,11 @@ export default function EditPage(props: Props) {
   const appbar = () => (
     <AppBar color="primary" elevation={0} className={classes.appbar}>
       <Toolbar>
-        <IconButton color="inherit">
-          <NavLink to="/home">
+        <NavLink to="/home">
+          <IconButton style={{ color: "white" }}>
             <KeyboardArrowLeftIcon></KeyboardArrowLeftIcon>
-          </NavLink>
-        </IconButton>
+          </IconButton>
+        </NavLink>
 
         <Typography variant="h6" className={classes.title}>
           Edit {game && game.object && game.object.title}
