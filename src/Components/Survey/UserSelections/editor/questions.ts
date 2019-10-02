@@ -6,7 +6,7 @@ export class QuestionMaker extends Base<GameQuestion, SelectionMaker>{
 
 
     constructor(args: { id?: number, path?: string, object?: GameQuestion, hasChildren?: boolean }) {
-        super({ ...args, path: "" })
+        super({ ...args, path: "/question" })
     }
 
     public async build(data: GameQuestion): Promise<Base<GameQuestion, SelectionMaker>> {

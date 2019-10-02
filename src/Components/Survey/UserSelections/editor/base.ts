@@ -48,8 +48,9 @@ export abstract class Base<T, K>{
      */
     public async create(): Promise<Base<T, K>> {
         const { baseURL } = config
-        let url = `${baseURL}${this.path}`
+        let url = `${baseURL}${this.path}/`
         let result = await axios.post<T>(url, this.object)
+        this.object = result.data
         return this
     }
 
@@ -60,7 +61,7 @@ export abstract class Base<T, K>{
      */
     public async delete(): Promise<Base<T, K>> {
         const { baseURL } = config
-        let url = `${baseURL}${this.path}`
+        let url = `${baseURL}${this.path}/${(this.object as any).id}/`
         let result = await axios.delete<T>(url)
         return this;
     }
@@ -71,11 +72,16 @@ export abstract class Base<T, K>{
      * @param newData The object you want to update
      */
     public async update(newData: T): Promise<T> {
-        const { baseURL } = config
-        let url = `${baseURL}${this.path}`
-        let result = await axios.patch<T>(url, newData)
-        this.object = newData;
-        return result.data;
+        if (this.object) {
+            const { baseURL } = config
+            let url = `${baseURL}${this.path}/${(this.object as any).id}/`
+            let result = await axios.patch<T>(url, newData)
+            this.object = newData;
+            return result.data;
+        } else {
+            throw ("No id in objecy")
+        }
+
     }
 
     /**
@@ -94,7 +100,7 @@ export abstract class Base<T, K>{
      */
     public async deleteChild(child: K) {
         if (this.hasChildren) {
-            let found = this.children.findIndex((c) => (c as any).id === (child as any).id)
+            let found = this.children.findIndex((c) => (c as any).object.id === (child as any).object.id)
             if (found > -1) {
                 this.children.splice(found, 1)
             }

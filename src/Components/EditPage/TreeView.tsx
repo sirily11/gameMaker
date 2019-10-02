@@ -1,6 +1,13 @@
 import React, { useContext, useState } from "react";
 import { EditContext } from "../models/editState";
-import { Dialog, DialogContent, DialogActions } from "@material-ui/core";
+import {
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Popper,
+  Paper,
+  Popover
+} from "@material-ui/core";
 import {
   UserSelections,
   TreeData
@@ -15,10 +22,15 @@ const containerStyles = {
 
 interface Props {
   data: TreeData;
+  onClick(data: any, e: any): void;
 }
 
 class CenteredTree extends React.PureComponent<Props> {
-  state: { translate?: any } = {};
+  state: {
+    translate?: any;
+    position?: any;
+    qid?: number;
+  } = {};
   treeContainer: any;
 
   componentDidMount() {
@@ -32,6 +44,8 @@ class CenteredTree extends React.PureComponent<Props> {
   }
 
   render() {
+    const { position, qid } = this.state;
+
     return (
       <div
         style={{ overflowX: "hidden", height: "100%" }}
@@ -41,7 +55,19 @@ class CenteredTree extends React.PureComponent<Props> {
           data={this.props.data}
           translate={this.state.translate}
           orientation={"vertical"}
+          onClick={this.props.onClick}
         />
+        {position && (
+          <Popover
+            open={position !== undefined}
+            anchorReference="anchorPosition"
+            anchorPosition={{ top: position.y, left: position.x }}
+          >
+            <Paper>
+              <h4>sadsadadsasd</h4>
+            </Paper>
+          </Popover>
+        )}
       </div>
     );
   }
@@ -73,7 +99,14 @@ export default function TreeView(props: TreeProps) {
   return (
     <Dialog open={props.open} onClose={props.onClose} fullWidth>
       <DialogContent style={{ height: "100vh" }}>
-        {treeData && <CenteredTree data={treeData}></CenteredTree>}
+        {treeData && (
+          <CenteredTree
+            data={treeData}
+            onClick={(node: any, e: any) => {
+              console.log(e);
+            }}
+          ></CenteredTree>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={() => props.onClose()}>Close</Button>

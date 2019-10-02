@@ -36,6 +36,10 @@ export class Question {
      */
     time_takes: number
     description: string
+    /**
+     * If the question had been visited before
+     */
+    _isVisited: boolean;
 
 
     constructor(args: { title: string, description: string, qid: number, image?: string, selections: SelectionObj[] }) {
@@ -47,6 +51,7 @@ export class Question {
         this.selections = selections
         this.selected = undefined
         this.time_takes = 0
+        this._isVisited = false;
     }
 
     /**
@@ -81,9 +86,31 @@ export class Question {
     }
 
     public toTree(): TreeData {
-        return {
-            name: this.title,
-            children: this.selections.map((s) => s.toTree())
+        if (!this._isVisited) {
+            this._isVisited = true;
+            return {
+                name: this.title,
+                attributes: { type: "Question", id: this.qid },
+                children: this.selections.map((s) => s.toTree()),
+                nodeSvgShape: {
+                    shape: 'circle',
+                    shapeProps: {
+                        r: 10,
+                        fill: '#26c6da',
+                        stroke: "white"
+                    },
+                },
+            }
+        } else {
+            return {
+                name: this.title,
+                attributes: {
+                    // attributes: { type: "Question", id: this.qid },
+                    "IsReplicated": "true"
+                },
+
+            }
         }
+
     }
 }

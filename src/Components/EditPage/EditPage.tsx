@@ -8,7 +8,8 @@ import {
   createStyles,
   createMuiTheme,
   MuiThemeProvider,
-  Button
+  Button,
+  IconButton
 } from "@material-ui/core";
 import { purple, lightBlue } from "@material-ui/core/colors";
 import QuestionDisplay from "./QuestionDisplay";
@@ -16,6 +17,10 @@ import { EditContext } from "../models/editState";
 import PopupMenu from "./components/PopupMenu";
 import FloatButton from "./components/FloatButton";
 import TreeView from "./TreeView";
+import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
+import { NavLink, RouteComponentProps } from "react-router-dom";
+import { RouterProps } from "react-router";
+import { Progress } from "semantic-ui-react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,17 +57,31 @@ const theme = createMuiTheme({
   }
 });
 
-export default function EditPage() {
+interface Props extends RouteComponentProps<{ id: string }> {}
+
+export default function EditPage(props: Props) {
   const classes = useStyles();
   const editContext = useContext(EditContext);
-  const { selectedSelectionPosition } = editContext;
+  const { selectedSelectionPosition, game, fetch } = editContext;
   const [openTreeview, setopenTreeview] = useState(false);
+  if (
+    !game ||
+    (!game.object || game.object.id !== parseInt(props.match.params.id))
+  ) {
+    fetch(parseInt(props.match.params.id));
+  }
 
   const appbar = () => (
     <AppBar color="primary" elevation={0} className={classes.appbar}>
       <Toolbar>
+        <IconButton color="inherit">
+          <NavLink to="/home">
+            <KeyboardArrowLeftIcon></KeyboardArrowLeftIcon>
+          </NavLink>
+        </IconButton>
+
         <Typography variant="h6" className={classes.title}>
-          News
+          Edit {game && game.object && game.object.title}
         </Typography>
       </Toolbar>
     </AppBar>
@@ -71,7 +90,9 @@ export default function EditPage() {
     <MuiThemeProvider theme={theme}>
       {appbar()}
       {selectedSelectionPosition && <PopupMenu></PopupMenu>}
-      <QuestionDisplay></QuestionDisplay>
+      {!game && <Progress></Progress>}
+      {game && <QuestionDisplay></QuestionDisplay>}
+
       <FloatButton></FloatButton>
       <Button
         style={{

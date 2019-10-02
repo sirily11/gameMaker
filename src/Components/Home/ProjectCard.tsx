@@ -6,6 +6,7 @@ import {
   Button,
   CardActions
 } from "@material-ui/core";
+import { NavLink } from "react-router-dom";
 
 interface Props {
   title: string;
@@ -15,7 +16,6 @@ interface Props {
 
 export default function ProjectCard(props: Props) {
   const { title, description, navLink } = props;
-  const onClick = (e: any) => console.log();
 
   return (
     <Card>
@@ -26,7 +26,9 @@ export default function ProjectCard(props: Props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button>Edit</Button>
+        <NavLink to={navLink}>
+          <Button>Edit</Button>
+        </NavLink>
         <Button>Delete</Button>
       </CardActions>
     </Card>

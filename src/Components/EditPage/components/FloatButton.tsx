@@ -76,9 +76,14 @@ export default function FloatButton() {
           onSubmit={async data => {
             if (game) {
               let question = new QuestionMaker({
-                object: data as GameQuestion
+                object: {
+                  ...(data as GameQuestion),
+                  game: game.object && game.object.id
+                }
               });
-
+              console.log(question.object);
+              await question.create();
+              console.log(question.object);
               game.addChild(question);
               update(game);
               setShowEdit(false);

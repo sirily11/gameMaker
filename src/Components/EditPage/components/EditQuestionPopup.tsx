@@ -21,12 +21,13 @@ export default function EditQuestionPopup(props: Props) {
   const [title, setTitle] = useState<string>();
   const [description, setDescription] = useState<string>();
   const [image, setImageURL] = useState<string>();
+  const [isLoading, setIsLoading] = useState(false);
   const editContext = useContext(EditContext);
   const { open, question, close } = props;
   const { game, update } = editContext;
 
   return (
-    <Dialog open={open} onClose={close} fullWidth>
+    <Dialog open={open} onClose={close} fullWidth >
       <DialogTitle>Edit {question.object && question.object.title}</DialogTitle>
       <DialogContent>
         <Form>
@@ -54,9 +55,11 @@ export default function EditQuestionPopup(props: Props) {
       <DialogActions>
         <Button onClick={close}>Close</Button>
         <Button
+          loading={isLoading}
           color="green"
-          onClick={() => {
+          onClick={async () => {
             if (question.object && game) {
+              setIsLoading(true);
               let object: GameQuestion = {
                 ...question.object,
                 title: title ? title : question.object.title,
@@ -66,8 +69,10 @@ export default function EditQuestionPopup(props: Props) {
                 image: image ? image : question.object.image
               };
               question.object = object;
+              await question.update(object);
               update(game);
               close();
+              setIsLoading(false);
             }
           }}
         >

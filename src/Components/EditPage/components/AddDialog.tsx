@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent } from "@material-ui/core";
 import JSONSchema from "../JSONSchema/JSONSchema";
 import { Schema } from "../JSONSchema/model/Schema";

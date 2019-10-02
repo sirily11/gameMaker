@@ -42,7 +42,22 @@ export class SelectionObj extends BasePlayer<Question>{
     }
 
     public toTree(): TreeData {
-        return { name: this.title, children: this.toQuestion ? [this.toQuestion && this.toQuestion.toTree()] : undefined }
+        return {
+            name: this.title,
+            attributes: { "type": "selection", "id": this.sid },
+            children: this.toQuestion ? [this.toQuestion && this.toQuestion.toTree()] : undefined,
+            nodeSvgShape: {
+                shape: 'rect',
+                shapeProps: {
+                    width: 20,
+                    height: 20,
+                    x: -10,
+                    y: -10,
+                    fill: 'purple',
+                    stroke: "white"
+                },
+            },
+        }
     }
 
 }

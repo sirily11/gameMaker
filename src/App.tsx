@@ -9,7 +9,6 @@ import {
 } from "react-router-dom";
 import Login from "./Components/Login/Login";
 import Home from "./Components/Home/Home";
-import Dashboard from "./Components/Dashboard/Dashboard";
 import { EditContext, EditProvider } from "./Components/models/editState";
 import "./App.css";
 import EditPage from "./Components/EditPage/EditPage";
@@ -48,10 +47,10 @@ class App extends Component {
               path="/edit/survey/:sid"
               render={props => <EditSurvey {...props} />}
             /> */}
-              <Route exact path="/edit" render={props => <EditPage />} />
               <Route
-                path="/dashboard"
-                render={props => <Dashboard {...props} />}
+                exact
+                path="/edit/:id"
+                render={props => <EditPage {...props} />}
               />
             </Switch>
           </div>

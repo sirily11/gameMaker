@@ -4,7 +4,7 @@ import { Base } from "./base";
 export class SelectionMaker extends Base<GameSelection, any>{
 
     constructor(args: { id?: number, path?: string, object?: GameSelection, hasChildren?: boolean }) {
-        super({ ...args, path: "", hasChildren: false })
+        super({ ...args, path: "/selection", hasChildren: false })
     }
 
     public async build(data: GameSelection): Promise<Base<GameSelection, any>> {

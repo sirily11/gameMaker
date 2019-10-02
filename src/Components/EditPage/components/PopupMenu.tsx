@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 10
     },
     popup: {
-      zIndex: 200
+      zIndex: 400
     }
   })
 );
@@ -39,12 +39,15 @@ export default function PopupMenu() {
 
   if (selectedSelection && selectedSelection.object) {
     presetValue = selectedSelection.object.title;
-    presetToQuestion = selectedSelection.object.to_question;
-
+    presetToQuestion =
+      selectedSelection.object.to_question === null
+        ? undefined
+        : selectedSelection.object.to_question;
   }
 
   const [title, setTitle] = useState<string | undefined>();
   const [selected, setSelected] = useState<number | undefined>();
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Popper
@@ -71,6 +74,7 @@ export default function PopupMenu() {
                       setTitle(e.target.value);
                     }}
                   ></TextField>
+
                   <Dropdown
                     defaultValue={presetToQuestion}
                     search
@@ -89,12 +93,39 @@ export default function PopupMenu() {
                     })}
                   ></Dropdown>
                 </Card.Content>
+                <Card.Content>
+                  <Button
+                    fluid
+                    onClick={async () => {
+                      let confirm = window.confirm("Do you want to delete?");
+                      if (confirm && game) {
+                        await selectedSelection.delete();
+                        game.children.forEach(async question => {
+                          if (
+                            question.object &&
+                            question.object.id ===
+                              (selectedSelection.object as GameSelection)
+                                .for_question
+                          ) {
+                            await question.deleteChild(selectedSelection);
+                            closePopUp();
+                            closePopUp();
+                            return;
+                          }
+                        });
+                      }
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </Card.Content>
                 <Card.Content extra>
                   <Button
                     basic
+                    loading={isLoading}
                     color="green"
-                    onClick={() => {
-                      console.log(title, selected);
+                    onClick={async () => {
+                      setIsLoading(true);
                       if (selectedSelection && selectedSelection.object) {
                         let newGameselection: GameSelection = {
                           ...selectedSelection.object,
@@ -102,9 +133,10 @@ export default function PopupMenu() {
                           to_question: selected ? selected : presetToQuestion
                         };
                         selectedSelection.object = newGameselection;
-                        selectedSelection.update(newGameselection);
+                        await selectedSelection.update(newGameselection);
                         update(game);
                       }
+                      setIsLoading(false);
                       closePopUp();
                     }}
                   >

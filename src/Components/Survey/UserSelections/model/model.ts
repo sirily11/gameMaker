@@ -16,10 +16,12 @@ export interface GameQuestion {
     title: string
     image?: string
     selections?: GameSelection[]
+    game?: number;
 }
 
 export interface GameSelection {
     id?: number
     title: string
     to_question?: number
+    for_question?: number
 }

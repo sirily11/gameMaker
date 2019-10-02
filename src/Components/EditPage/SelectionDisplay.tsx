@@ -11,7 +11,7 @@ import {
 import { QuestionMaker } from "../Survey/UserSelections/editor/questions";
 import classes from "*.module.css";
 import { EditContext } from "../models/editState";
-import { Icon } from "semantic-ui-react";
+import { Icon, Button } from "semantic-ui-react";
 import { SelectionMaker } from "../Survey/UserSelections/editor/selection";
 import { GameQuestion } from "../Survey/UserSelections/model/model";
 
@@ -22,8 +22,7 @@ interface Props {
 export default function SelectionDisplay(props: Props) {
   const { question } = props;
   const editContext = useContext(EditContext);
-  const { selectedSelection, game } = editContext;
-
+  const { selectedSelection, game, update } = editContext;
   /**
    * Selection is selected
    * @param id selected selection's id
@@ -74,6 +73,7 @@ export default function SelectionDisplay(props: Props) {
                   s.object &&
                   s.object.to_question &&
                   getQuestion(s.object.to_question)}
+              
               </Typography>
             }
           />

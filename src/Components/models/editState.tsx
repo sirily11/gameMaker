@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Game } from "../Survey/UserSelections/model/model";
 import { Maker } from "../Survey/UserSelections/editor/maker";
 import { SelectionMaker } from "../Survey/UserSelections/editor/selection";
+import axios from "axios";
+import { getURL } from "../settings";
+import { config } from "../Survey/UserSelections/config";
 
 interface EditState {
   game?: Maker;
@@ -14,6 +17,7 @@ interface EditState {
     selection: SelectionMaker | undefined
   ): void;
   update(data: Maker): void;
+  fetch(id: number): Promise<void>;
 }
 
 interface EditProps {}
@@ -76,13 +80,22 @@ export class EditProvider extends Component<EditProps, EditState> {
       build: this.build,
       select: this.select,
       closePopUp: this.closePopUp,
-      update: this.update
+      update: this.update,
+      fetch: this.fetchData
     };
   }
 
-  async componentDidMount() {
-    await this.build(data);
-  }
+  /**
+   * Fetch data from internet
+   */
+  fetchData = async (id: number) => {
+    // TODO
+    const { baseURL } = config;
+    let url = `${baseURL}/game/${id}/`;
+    let response = await axios.get<Game>(url);
+    console.log(response.data);
+    await this.build(response.data);
+  };
 
   /**
    * when user select the choice
@@ -139,7 +152,10 @@ const context: EditState = {
   },
   select: (e: HTMLElement, s: SelectionMaker) => {},
   closePopUp: () => {},
-  update: () => {}
+  update: () => {},
+  fetch: () => {
+    return Promise.resolve();
+  }
 };
 
 export const EditContext = React.createContext(context);

@@ -5,6 +5,8 @@ import { SubmitObject, Game } from '../model/model';
 export interface TreeData {
     name: string;
     children?: TreeData[]
+    attributes?: any
+    nodeSvgShape?: any
 }
 
 /**

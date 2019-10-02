@@ -14,12 +14,15 @@ import {
 } from "@material-ui/core";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import EditQuestionPopup from "./components/EditQuestionPopup";
-import { Button } from "semantic-ui-react";
+import { Button, Label } from "semantic-ui-react";
 import { QuestionMaker } from "../Survey/UserSelections/editor/questions";
 import AddDialog from "./components/AddDialog";
 import { Schema, Widget, Choice } from "./JSONSchema/model/Schema";
 import { SelectionMaker } from "../Survey/UserSelections/editor/selection";
-import { GameSelection } from "../Survey/UserSelections/model/model";
+import {
+  GameSelection,
+  GameQuestion
+} from "../Survey/UserSelections/model/model";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,10 +69,14 @@ export default function QuestionDisplay() {
   // Current edit index
   const [editIndex, setEditIndex] = useState<number>(-1);
   const [openAddSelection, setOpenAddSelection] = useState(false);
-
+  //
+  const [isLoading, setisLoading] = useState(false);
   const { game, update } = editContext;
   const classes = useStyles();
 
+  /**
+   * To Question choice
+   */
   const choices =
     game &&
     game.children.map(q => {
@@ -79,6 +86,9 @@ export default function QuestionDisplay() {
       } as Choice;
     });
 
+  /**
+   * Add question schema
+   */
   const schemas: Schema[] = [
     {
       name: "title",
@@ -108,7 +118,12 @@ export default function QuestionDisplay() {
     }
   ];
 
+  /**
+   * If this is the end of the game
+   * @param question
+   */
   const isEnd = (question: QuestionMaker): boolean => {
+    if (!question.children || question.children.length === 0) return true;
     for (let selection of question.children) {
       if (selection.object && !selection.object.to_question) {
         return true;
@@ -128,6 +143,8 @@ export default function QuestionDisplay() {
                 <Button
                   style={{ marginLeft: 10 }}
                   icon="edit"
+                  size="mini"
+                  circular
                   onClick={() => {
                     setOpen(true);
                     setEditIndex(index);
@@ -136,9 +153,31 @@ export default function QuestionDisplay() {
                 <Button
                   style={{ marginLeft: 10 }}
                   icon="add"
+                  size="mini"
+                  circular
                   onClick={() => {
                     setEditIndex(index);
                     setOpenAddSelection(true);
+                  }}
+                ></Button>
+                <Button
+                  style={{ marginLeft: 10 }}
+                  icon="trash"
+                  loading={isLoading}
+                  size="mini"
+                  circular
+                  onClick={async () => {
+                    // Delete the current question
+                    let confirmation = window.confirm("Do you want to delete?");
+                    if (confirmation) {
+                      setisLoading(true);
+                      await c.delete();
+                      if (game) {
+                        await game.deleteChild(c);
+                      }
+                      setisLoading(false);
+                      update(game);
+                    }
                   }}
                 ></Button>
               </Typography>
@@ -146,21 +185,19 @@ export default function QuestionDisplay() {
               <Typography component="p">
                 {c.object && c.object.description}
               </Typography>
-              <Collapse
-                in={c.object && c.object.image !== undefined}
-                mountOnEnter
-                unmountOnExit
-              >
+              {c.object && c.object.image && (
                 <CardMedia
                   className={classes.media}
                   image={c.object && c.object.image}
                 ></CardMedia>
-              </Collapse>
+              )}
               {c && <SelectionDisplay question={c}></SelectionDisplay>}
             </CardContent>
             {isEnd(c) ? (
               <Tooltip title="This is the end of the game">
-                <ExitToAppIcon className={classes.floadIcon}></ExitToAppIcon>
+                <Label as="a" color="red" tag style={{ marginBottom: 10 }}>
+                  End
+                </Label>
               </Tooltip>
             ) : null}
           </Card>
@@ -179,11 +216,16 @@ export default function QuestionDisplay() {
           onClose={() => setOpenAddSelection(false)}
           schemas={schemas}
           onSubmit={async data => {
-            console.log(data);
-            let selection = new SelectionMaker({
-              object: data as GameSelection
-            });
             if (game) {
+              let selection = new SelectionMaker({
+                object: {
+                  ...(data as GameSelection),
+                  for_question: (game.children[editIndex]
+                    .object as GameQuestion).id
+                }
+              });
+              console.log(selection.object);
+              await selection.create();
               await game.children[editIndex].addChild(selection);
               setOpenAddSelection(false);
               update(game);
