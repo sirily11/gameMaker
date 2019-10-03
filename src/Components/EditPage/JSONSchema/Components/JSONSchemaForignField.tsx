@@ -192,7 +192,6 @@ export default function JSONSchemaForignField(props: Props) {
                   values={list && list.find(l => l.id === selected)}
                   url={url}
                   onSubmit={update}
-                  loading={loading}
                 ></JSONSchema>
               )}
             </DialogContent>

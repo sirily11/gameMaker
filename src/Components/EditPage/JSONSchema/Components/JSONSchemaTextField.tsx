@@ -46,6 +46,7 @@ export default function JSONSchemaTextField(props: FieldProps) {
     <div>
       <Form.Input
         data-testid="input-field"
+        type={schema.name.includes("password") ? "password" : undefined}
         control={Input}
         label={schema.label}
         error={hasError()}

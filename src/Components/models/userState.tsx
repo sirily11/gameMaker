@@ -1,16 +1,23 @@
 import React, { Component } from "react";
-import { Game } from "../Survey/UserSelections/model/model";
-import { Maker } from "../Survey/UserSelections/editor/maker";
+import axios from "axios";
+import { config } from "../Survey/UserSelections/config";
 
 interface User {
   userName: string;
 }
 
+interface ErrorMsg {
+  signIn?: { [key: string]: any };
+  signUp?: { [key: string]: string[] };
+}
+
 interface UserState {
   user?: User;
   isLogin: boolean;
-  signIn(username: string, password: string): void;
-  signUp(username: string, password: string): void;
+  errMsgs: ErrorMsg;
+  signIn(args: any): Promise<void>;
+  signUp(args: any): Promise<void>;
+  signOut(): void;
 }
 
 interface UserProps {}
@@ -20,14 +27,66 @@ export class UserProvider extends Component<UserProps, UserState> {
     super(props);
     this.state = {
       isLogin: false,
+      errMsgs: {},
       signIn: this.signIn,
-      signUp: this.signUp
+      signUp: this.signUp,
+      signOut: this.signOut
     };
   }
 
-  signIn = async (username: string, password: string) => {};
+  componentDidMount() {
+    if (sessionStorage.getItem("access")) {
+      this.setState({ isLogin: true });
+    }
+  }
 
-  signUp = async (username: string, password: string) => {};
+  /**
+   * Sign In
+   */
+  signIn = async (args: any) => {
+    let errMsgs = this.state.errMsgs;
+    try {
+      const { signInURL } = config;
+      let response = await axios.post<{ refresh: string; access: string }>(
+        signInURL,
+        args
+      );
+      // store the token
+      sessionStorage.setItem("access", response.data.access);
+      this.setState({ errMsgs: {}, isLogin: true });
+    } catch (err) {
+      let msg: { [key: string]: string[] } = err.response.data;
+
+      errMsgs.signIn = msg;
+      this.setState({ errMsgs });
+    }
+  };
+
+  /**
+   * Sign Up
+   */
+  signUp = async (args: any) => {
+    try {
+      const { signUpURL } = config;
+      let response = await axios.post<{ refresh: string; access: string }>(
+        signUpURL,
+        args
+      );
+      this.setState({ errMsgs: {} });
+      await this.signIn({ username: args.username, password: args.password });
+    } catch (err) {
+      let msg: { [key: string]: string[] } = err.response.data;
+      let errMsgs = this.state.errMsgs;
+      errMsgs.signUp = msg;
+      console.log(errMsgs);
+      this.setState({ errMsgs });
+    }
+  };
+
+  signOut = () => {
+    sessionStorage.removeItem("access");
+    this.setState({ isLogin: false });
+  };
 
   render() {
     return (
@@ -40,9 +99,14 @@ export class UserProvider extends Component<UserProps, UserState> {
 
 const context: UserState = {
   isLogin: false,
-  signIn: (username: string, password: string) => {},
-
-  signUp: (username: string, password: string) => {}
+  signIn: () => {
+    return Promise.resolve();
+  },
+  signUp: () => {
+    return Promise.resolve();
+  },
+  signOut: () => {},
+  errMsgs: {}
 };
 
 export const UserContext = React.createContext(context);

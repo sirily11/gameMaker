@@ -47,9 +47,9 @@ export abstract class Base<T, K>{
      * And send it's data to the server
      */
     public async create(): Promise<Base<T, K>> {
-        const { baseURL } = config
+        const { baseURL, token } = config
         let url = `${baseURL}${this.path}/`
-        let result = await axios.post<T>(url, this.object)
+        let result = await axios.post<T>(url, this.object, { headers: { Authorization: `Bearer ${token()}` } })
         this.object = result.data
         return this
     }
@@ -60,9 +60,9 @@ export abstract class Base<T, K>{
      * And send the deletion request to the server
      */
     public async delete(): Promise<Base<T, K>> {
-        const { baseURL } = config
+        const { baseURL, token } = config
         let url = `${baseURL}${this.path}/${(this.object as any).id}/`
-        let result = await axios.delete<T>(url)
+        let result = await axios.delete<T>(url, { headers: { Authorization: `Bearer ${token()}` } })
         return this;
     }
 
@@ -73,9 +73,9 @@ export abstract class Base<T, K>{
      */
     public async update(newData: T): Promise<T> {
         if (this.object) {
-            const { baseURL } = config
+            const { baseURL, token } = config
             let url = `${baseURL}${this.path}/${(this.object as any).id}/`
-            let result = await axios.patch<T>(url, newData)
+            let result = await axios.patch<T>(url, newData, { headers: { Authorization: `Bearer ${token()}` } })
             this.object = newData;
             return result.data;
         } else {

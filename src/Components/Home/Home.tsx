@@ -18,18 +18,16 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  CircularProgress,
   LinearProgress
 } from "@material-ui/core";
 import ProjectCard from "./ProjectCard";
-import { EditContext } from "../models/editState";
 import axios from "axios";
 import { config } from "../Survey/UserSelections/config";
 import AddIcon from "@material-ui/icons/Add";
 import { Schema, Widget } from "../EditPage/JSONSchema/model/Schema";
 import { JSONSchema } from "../EditPage/JSONSchema";
-import { setPriority } from "os";
-import { Progress } from "semantic-ui-react";
+import { UserContext } from "../models/userState";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,7 +70,7 @@ interface Projects {
 
 export default function Home() {
   const classes = useStyles();
-  const editContext = useContext(EditContext);
+  const userContext = useContext(UserContext);
 
   const [projects, setprojects] = useState<Projects[]>();
   const [show, setShow] = useState(false);
@@ -80,9 +78,14 @@ export default function Home() {
 
   if (!projects) {
     const { baseURL } = config;
-    axios.get<Projects[]>(`${baseURL}/game/`).then(res => {
-      setprojects(res.data);
-    });
+    let token = sessionStorage.getItem("access");
+    axios
+      .get<Projects[]>(`${baseURL}/game/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => {
+        setprojects(res.data);
+      });
   }
 
   const deleteIndex = async (index: number, id: number) => {
@@ -120,6 +123,10 @@ export default function Home() {
         </Typography>
         <IconButton color="inherit" onClick={() => setShow(true)}>
           <AddIcon></AddIcon>
+        </IconButton>
+
+        <IconButton color="inherit" onClick={() => userContext.signOut()}>
+          <ExitToAppIcon></ExitToAppIcon>
         </IconButton>
       </Toolbar>
     </AppBar>
@@ -170,8 +177,10 @@ export default function Home() {
               url=""
               schemas={schemas}
               onSubmit={async data => {
-                const { baseURL } = config;
-                let res = await axios.post<Projects>(`${baseURL}/game/`, data);
+                const { baseURL, token } = config;
+                let res = await axios.post<Projects>(`${baseURL}/game/`, data, {
+                  headers: { Authorization: `Bearer ${token()}` }
+                });
                 if (projects) {
                   projects.push(res.data);
                   setprojects(projects);

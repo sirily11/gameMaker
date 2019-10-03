@@ -8,7 +8,7 @@ interface Props {
   open: boolean;
   title: string;
   onClose?(): void;
-  onSubmit?(data: { [key: string]: any }): void;
+  onSubmit?(data: { [key: string]: any }): Promise<void>;
   schemas: Schema[];
 }
 

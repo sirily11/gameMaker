@@ -15,19 +15,23 @@ interface Props {
   actions?: FieldAction[];
   icons?: FieldIcon[];
   url: string;
-  loading?: boolean;
-  onSubmit?(data: { [key: string]: any }): void;
+  onSubmit?(data: { [key: string]: any }): Promise<void>;
 }
 
 interface State {
   schemaList?: SchemaList;
   submitSuccess?: boolean;
+  loading: boolean;
 }
 
 export default class JSONSchema extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { schemaList: undefined, submitSuccess: undefined };
+    this.state = {
+      schemaList: undefined,
+      submitSuccess: undefined,
+      loading: false
+    };
   }
 
   componentDidMount() {
@@ -109,8 +113,7 @@ export default class JSONSchema extends Component<Props, State> {
   }
 
   render() {
-    const { schemaList, submitSuccess } = this.state;
-    const { loading } = this.props;
+    const { schemaList, submitSuccess, loading } = this.state;
 
     return (
       <Container>
@@ -127,15 +130,20 @@ export default class JSONSchema extends Component<Props, State> {
                 <Form.Field key={s.name}>{this.renderField(s)}</Form.Field>
               ))}
           <Button
-            loading={loading === true}
-            onClick={() => {
+            loading={loading}
+            onClick={async () => {
+              this.setState({
+                loading: true
+              });
               if (schemaList && this.props.onSubmit) {
                 try {
                   let data = schemaList.onSubmit();
-                  this.props.onSubmit(data);
+                  await this.props.onSubmit(data);
                   this.setState({ submitSuccess: true });
                 } catch (e) {
                   this.setState({ submitSuccess: false });
+                } finally {
+                  this.setState({ loading: false });
                 }
               }
             }}

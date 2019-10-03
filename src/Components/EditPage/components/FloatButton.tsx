@@ -81,9 +81,9 @@ export default function FloatButton() {
                   game: game.object && game.object.id
                 }
               });
-              console.log(question.object);
+
               await question.create();
-              console.log(question.object);
+
               game.addChild(question);
               update(game);
               setShowEdit(false);

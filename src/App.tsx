@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import {
   HashRouter,
   BrowserRouter,
@@ -12,41 +12,39 @@ import Home from "./Components/Home/Home";
 import { EditContext, EditProvider } from "./Components/models/editState";
 import "./App.css";
 import EditPage from "./Components/EditPage/EditPage";
+import SignUpSide from "./Components/Login/SignUp";
+import { UserProvider, UserContext } from "./Components/models/userState";
 
-class App extends Component {
-  render() {
-    return (
-      <EditProvider>
+export default function App() {
+  const userContext = useContext(UserContext);
+  const { isLogin } = userContext;
+  console.log(isLogin);
+
+  return (
+    <EditProvider>
+
         <HashRouter>
           <div>
             <Switch>
-              {/* <Route
-              exact
-              path="/"
-              render={props =>
-                !this.state.logined ? (
-                  <Login
-                    {...props}
-                    login={() => {
-                      this.setState({ logined: true });
-                    }}
-                  />
-                ) : (
-                  <Redirect to="/home" />
-                )
-              }
-            /> */}
-              <Route exact path="/home" render={props => <Home />} />
-              {/* <Route
-              exact
-              path="/survey/:sid"
-              render={props => <DisplaySurvey {...props} />}
-            />
-            <Route
-              exact
-              path="/edit/survey/:sid"
-              render={props => <EditSurvey {...props} />}
-            /> */}
+              <Route
+                exact
+                path="/"
+                render={props =>
+                  isLogin ? <Redirect to="/home" /> : <Login />
+                }
+              ></Route>
+              <Route
+                exact
+                path="/signUp"
+                render={props =>
+                  isLogin ? <Redirect to="/home" /> : <SignUpSide />
+                }
+              ></Route>
+              <Route
+                exact
+                path="/home"
+                render={props => (!isLogin ? <Redirect to="/" /> : <Home />)}
+              />
               <Route
                 exact
                 path="/edit/:id"
@@ -55,9 +53,7 @@ class App extends Component {
             </Switch>
           </div>
         </HashRouter>
-      </EditProvider>
-    );
-  }
-}
 
-export default App;
+    </EditProvider>
+  );
+}
