@@ -92,7 +92,7 @@ export default function SignInSide() {
           schemas={signInSchema}
           url=""
           onSubmit={async data => {
-            userContext.signIn(data);
+            await userContext.signIn(data);
           }}
         ></JSONSchema>
         <Grid container>
