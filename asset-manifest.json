@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/gameMaker/static/css/main.0e56a86f.chunk.css",
+    "main.js": "/gameMaker/static/js/main.81ab21b9.chunk.js",
+    "main.js.map": "/gameMaker/static/js/main.81ab21b9.chunk.js.map",
+    "runtime-main.js": "/gameMaker/static/js/runtime-main.1a791829.js",
+    "runtime-main.js.map": "/gameMaker/static/js/runtime-main.1a791829.js.map",
+    "static/css/2.5fbbc0e6.chunk.css": "/gameMaker/static/css/2.5fbbc0e6.chunk.css",
+    "static/js/2.f4eda33d.chunk.js": "/gameMaker/static/js/2.f4eda33d.chunk.js",
+    "static/js/2.f4eda33d.chunk.js.map": "/gameMaker/static/js/2.f4eda33d.chunk.js.map",
+    "index.html": "/gameMaker/index.html",
+    "precache-manifest.6fddb3e0a6790ae3d184259fa90d3b64.js": "/gameMaker/precache-manifest.6fddb3e0a6790ae3d184259fa90d3b64.js",
+    "service-worker.js": "/gameMaker/service-worker.js",
+    "static/css/2.5fbbc0e6.chunk.css.map": "/gameMaker/static/css/2.5fbbc0e6.chunk.css.map",
+    "static/css/main.0e56a86f.chunk.css.map": "/gameMaker/static/css/main.0e56a86f.chunk.css.map",
+    "static/media/semantic.min.css": "/gameMaker/static/media/outline-icons.ef60a4f6.woff"
+  }
+}
